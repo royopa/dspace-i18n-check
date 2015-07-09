@@ -1,5 +1,5 @@
-Silex Skeleton
-==============
+dspace-i18n-check
+=================
 
 Welcome to the Silex Skeleton - a fully-functional Silex application that you
 can use as the skeleton for your new applications.
