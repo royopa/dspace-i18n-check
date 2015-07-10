@@ -5,10 +5,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Royopa\DSpace\i18n\CheckKeys;
 
 //Request::setTrustedProxies(array('127.0.0.1'));
 
 $app->get('/', function () use ($app) {
+    $check = new CheckKeys();
+
     return $app['twig']->render('index.html.twig', array());
 })
 ->bind('homepage')
