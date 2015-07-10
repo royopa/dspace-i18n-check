@@ -14,15 +14,19 @@
         "symfony/css-selector": "~2.6",
         "symfony/debug": "~2.6",
         "symfony/finder": "~2.6",
-        "symfony/form": "~2.6",
+        "symfony/form": "^2.7",
         "symfony/monolog-bridge": "~2.6",
         "symfony/process": "~2.6",
         "symfony/security": "~2.6",
         "symfony/translation": "~2.6",
-        "symfony/twig-bridge": "~2.6",
+        "symfony/twig-bridge": "^2.7",
         "symfony/validator": "~2.6",
-        "guzzlehttp/guzzle": "^6.0"
+        "guzzlehttp/guzzle": "^6.0",
+        "symfony/security-csrf": "^2.7",
+        "royopa/phploy": "dev-master"
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "autoload": {
         "psr-0": { "": "src/" }
     },
@@ -35,6 +39,9 @@
         "run": [
             "echo 'Started web server on http://localhost:8888'",
             "php -S localhost:8888 -t web web/index_dev.php"
+        ],
+        "deploy": [
+            "php ./vendor/royopa/phploy/bin/phploy.phar --server production"
         ]
     }
 }
