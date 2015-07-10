@@ -8,10 +8,6 @@ Check the messages key from [messages.xml](https://raw.githubusercontent.com/DSp
 
 https://raw.githubusercontent.com/DSpace/DSpace/master/dspace-xmlui/src/main/webapp/i18n/messages.xml
 
-
-https://raw.githubusercontent.com/DSpace/dspace-xmlui-lang/master/src/main/webapp/i18n/messages_pt_BR.xml
-
-
 https://github.com/DSpace/dspace-xmlui-lang/tree/master/src/main/webapp/i18n
 
 Languages available

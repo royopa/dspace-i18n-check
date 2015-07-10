@@ -15,6 +15,11 @@ $app->register(new ServiceControllerServiceProvider());
 $app->register(new TwigServiceProvider());
 $app->register(new HttpFragmentServiceProvider());
 $app->register(new FormServiceProvider());
+$app->register(new Silex\Provider\TranslationServiceProvider(), array(
+      'locale' => 'pt_BR',
+      'translation.class_path' =>  __DIR__ . '/../vendor/symfony/src',
+      'translator.messages' => array()
+)) ;
 $app['twig'] = $app->extend('twig', function ($twig, $app) {
     // add custom globals, filters, tags, ...
 

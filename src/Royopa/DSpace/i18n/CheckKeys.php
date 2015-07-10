@@ -7,10 +7,18 @@
 
 namespace Royopa\DSpace\i18n;
 
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use GuzzleHttp\Client;
+
 class CheckKeys
 {
-    public function __construct()
+    public function __construct($master, $toCheck)
     {
+        //echo $this->getMessageXmlFile($this->getUrlMessageFile($master));
+
+        echo $this->getMessageXmlFile($this->getUrlMessageFile($toCheck));
+
         //$argc = 3;
 
         //if ($argc != 3) {
@@ -26,6 +34,25 @@ class CheckKeys
          
         //print "\n\n\nIN $argv[2] BUT NOT IN $argv[1]:\n\n";
         //$this->printMissing($toCheckKeys, $masterKeys);
+    }
+
+    private function getUrlMessageFile($message = 'messages.xml')
+    {
+        $baseUrl = 'https://raw.githubusercontent.com/DSpace/DSpace/master/dspace-xmlui/src/main/webapp/i18n/';
+
+        if ($message != 'messages.xml') {
+            $baseUrl = 'https://raw.githubusercontent.com/DSpace/dspace-xmlui-lang/master/src/main/webapp/i18n/';
+        }
+
+        return $baseUrl . $message;
+    }
+
+    private function getMessageXmlFile($url)
+    {
+        $client = new \GuzzleHttp\Client();
+        $response = $client->get($url);
+
+        return $response->getBody();
     }
 
     private function printMissing($reference, $test)
