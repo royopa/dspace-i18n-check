@@ -1,83 +1,41 @@
 dspace-i18n-check
 =================
 
+[http://dspace-i18n-check.esy.es](http://dspace-i18n-check.esy.es)
+
+Check the messages key from [messages.xml](https://raw.githubusercontent.com/DSpace/DSpace/master/dspace-xmlui/src/main/webapp/i18n/messages.xml) to other languages available in [XMLUI Language Packs (Multilingual Support / I18N)](https://github.com/DSpace/dspace-xmlui-lang).
+
+
+https://raw.githubusercontent.com/DSpace/DSpace/master/dspace-xmlui/src/main/webapp/i18n/messages.xml
+
+
+https://raw.githubusercontent.com/DSpace/dspace-xmlui-lang/master/src/main/webapp/i18n/messages_pt_BR.xml
+
+
+https://github.com/DSpace/dspace-xmlui-lang/tree/master/src/main/webapp/i18n
+
+Languages available
+-------------------
+
+messages_ar.xml remove extra colon  2 months ago
+messages_bg.xml remove extra colon  2 months ago
+messages_ca.xml The content of this translations was lost in revision "5790 08.11.10 …  4 years ago
+messages_ca_ES.xml  Translate Mirage 2 strings to Catalan.  9 months ago
+messages_cs.xml remove extra colon  2 months ago
+messages_de.xml remove extra colon  2 months ago
+messages_el.xml remove (most) duplicate strings a year ago
+messages_es.xml remove extra colon  2 months ago
+messages_et.xml remove extra colon  2 months ago
+messages_eu.xml remove extra colon  2 months ago
+messages_fr.xml DS-1568: messages_fr.xml (version 09/Apr/14)    a year ago
+messages_gl.xml remove extra colon  2 months ago
+messages_id.xml remove extra colon  2 months ago
+messages_it.xml remove (most) duplicate strings a year ago
+messages_ja.xml remove (most) duplicate strings a year ago
+messages_pl.xml remove extra colon  2 months ago
+messages_pt_BR.xml  remove extra colon  2 months ago
+messages_ru.xml remove extra colon  2 months ago
+messages_tr.xml remove extra colon  2 months ago
+messages_uk.xml
+
 https://wiki.duraspace.org/pages/viewpage.action?pageId=19006307#InternationalizationSupport(I18nSupport)-PHPScripttocheckformissing/extrastrings
-
-Welcome to the Silex Skeleton - a fully-functional Silex application that you
-can use as the skeleton for your new applications.
-
-This document contains information on how to start using the Silex Skeleton.
-
-Creating a Silex Application
-----------------------------
-
-Silex uses `Composer`_ to ease the creation of a new project:
-
-.. code-block:: console
-
-    $ composer create-project fabpot/silex-skeleton path/to/install ~2.0@dev
-
-Composer will create a new Silex project under the `path/to/install` directory.
-
-Browsing the Demo Application
------------------------------
-
-Congratulations! You're now ready to use Silex.
-
-To see a real-live Silex page in action, start the PHP built-in web server with
-command:
-
-.. code-block:: console
-
-    $ cd path/to/install
-    $ composer run
-
-Then, browse to http://localhost:8888/.
-
-Getting started with Silex
---------------------------
-
-This distribution is meant to be the starting point for your Silex applications.
-
-A great way to start learning Silex is via the `Documentation`_, which will
-take you through all the features of Silex.
-
-What's inside?
----------------
-
-The Silex Skeleton is configured with the following service providers:
-
-* `UrlGeneratorServiceProvider`_ - Provides a service for generating URLs for
-  named routes.
-
-* `ValidatorServiceProvider`_ - Provides a service for validating data. It is
-  most useful when used with the FormServiceProvider, but can also be used
-  standalone.
-
-* `ServiceControllerServiceProvider`_ - As your Silex application grows, you
-  may wish to begin organizing your controllers in a more formal fashion.
-  Silex can use controller classes out of the box, but with a bit of work,
-  your controllers can be created as services, giving you the full power of
-  dependency injection and lazy loading.
-
-* `TwigServiceProvider`_ - Provides integration with the Twig template engine.
-
-* `WebProfilerServiceProvider`_ - Enable the Symfony web debug toolbar and
-  the Symfony profiler in your Silex application when developing.
-
-* `MonologServiceProvider`_ - Enable logging in the development environment.
-
-Read the `Providers`_ documentation for more details about Silex Service
-Providers.
-
-Enjoy!
-
-.. _Composer: http://getcomposer.org/
-.. _Documentation: http://silex.sensiolabs.org/documentation
-.. _UrlGeneratorServiceProvider: http://silex.sensiolabs.org/doc/providers/url_generator.html
-.. _ValidatorServiceProvider: http://silex.sensiolabs.org/doc/providers/validator.html
-.. _ServiceControllerServiceProvider: http://silex.sensiolabs.org/doc/providers/service_controller.html
-.. _TwigServiceProvider: http://silex.sensiolabs.org/doc/providers/twig.html
-.. _WebProfilerServiceProvider: http://github.com/silexphp/Silex-WebProfiler
-.. _MonologServiceProvider: http://silex.sensiolabs.org/doc/providers/monolog.html
-.. _Providers: http://silex.sensiolabs.org/doc/providers.html
