@@ -79,6 +79,15 @@ $app->match('/', function (Request $request) use ($app) {
 })
 ->bind('homepage');
 
+$app->match('/update_sources', function (Request $request) use ($app) {
+    return new Response('to do')
+    return $app['twig']->render(
+        'index.html.twig',
+        array('form' => $form->createView()
+    ));
+})
+->bind('update_sources');
+
 $app->error(function (\Exception $e, Request $request, $code) use ($app) {
     if ($app['debug']) {
         return;
