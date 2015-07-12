@@ -7,16 +7,16 @@ use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
 use Silex\Provider\HttpFragmentServiceProvider;
 use Silex\Provider\FormServiceProvider;
-use Silex\Provider\UrlGeneratorServiceProvider;
 
 $app = new Application();
 $app->register(new RoutingServiceProvider());
 $app->register(new ValidatorServiceProvider());
 $app->register(new ServiceControllerServiceProvider());
-$app->register(new TwigServiceProvider());
+$app->register(new Silex\Provider\TwigServiceProvider(), array(
+    'twig.path' => __DIR__.'/templates',
+));
 $app->register(new HttpFragmentServiceProvider());
 $app->register(new FormServiceProvider());
-$app->register(new UrlGeneratorServiceProvider());
 $app->register(new Silex\Provider\TranslationServiceProvider(), array(
       'locale' => 'pt_BR',
       'translation.class_path' =>  __DIR__ . '/../vendor/symfony/src',
