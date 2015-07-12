@@ -23,7 +23,8 @@
         "symfony/validator": "~2.6",
         "guzzlehttp/guzzle": "^6.0",
         "symfony/security-csrf": "^2.7",
-        "royopa/phploy": "dev-master"
+        "royopa/phploy": "dev-master",
+        "twig/twig": "^1.18"
     },
     "minimum-stability": "stable",
     "prefer-stable": true,
