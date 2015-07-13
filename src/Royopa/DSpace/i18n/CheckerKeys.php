@@ -14,34 +14,34 @@ use Doctrine\DBAL\Connection;
 
 class CheckerKeys
 {
+    private $inMasterNotInToCheck = array();
+
+    private $inToCheckNotInMaster = array();
+
     public function __construct(Connection $conn, $master, $toCheck)
     {
         $this->conn    = $conn;
         $this->master  = $master;
         $this->toCheck = $toCheck;
+        $this->pathToSave = __DIR__ . '/../../../../sources/';
+        $this->fullPathMaster  = $this->pathToSave.$master;
+        $this->fullPathToCheck = $this->pathToSave.$toCheck;
 
-        $this->saveFile($toCheck);
-        $this->saveFile($master);
+        $fs = new Filesystem();
+        if (! $fs->exists($this->fullPathMaster)) {
+            $this->saveFile($master);
+        }
 
-        //echo $this->getMessageXmlFile($this->getUrlMessageFile($master));
-
-        //echo $this->getMessageXmlFile($this->getUrlMessageFile($toCheck));
-
-        //$argc = 3;
-
-        //if ($argc != 3) {
-            //echo "Usage: checkkeys.php <master> <tocheck>\n";
-            //exit(1);
-        //}
+        if (! $fs->exists($this->fullPathToCheck)) {
+            $this->saveFile($toCheck);
+        }
          
-        //$masterKeys  = $this->getKeys($argv[1]);
-        //$toCheckKeys = $this->getKeys($argv[2]);
-         
-        //print "IN $argv[1] BUT NOT IN $argv[2]:\n\n";
-        //$this->printMissing($masterKeys, $toCheckKeys);
-         
-        //print "\n\n\nIN $argv[2] BUT NOT IN $argv[1]:\n\n";
-        //$this->printMissing($toCheckKeys, $masterKeys);
+        $masterKeys  = $this->getKeys($this->fullPathMaster);
+        $toCheckKeys = $this->getKeys($this->fullPathToCheck);
+        //in master but not in translation file
+        $this->inMasterNotInToCheck = $this->buildMissingKeys($masterKeys, $toCheckKeys);
+        //in translation but not in master
+        $this->inToCheckNotInMaster = $this->buildMissingKeys($toCheckKeys, $masterKeys);
     }
 
     private function getUrlMessageFile($messageFile = 'messages.xml')
@@ -58,8 +58,7 @@ class CheckerKeys
     private function saveFile($messageFile)
     {
         $fromUrl = $this->getUrlMessageFile($messageFile);
-        $pathToSave  = __DIR__ . '/../../../../sources/';
-        $toFile  = $pathToSave.$messageFile;
+        $toFile  = $this->pathToSave.$messageFile;
 
         $fp = fopen ($toFile, 'w+');
         $ch = \curl_init();
@@ -95,7 +94,19 @@ class CheckerKeys
             }
         }
     }
-     
+
+    private function buildMissingKeys($reference, $test)
+    {
+        $keys = array();
+        foreach ($test as $value) {
+            if (! in_array($value, $reference)) {
+                $keys[] = $value;
+            }
+        }
+
+        return $keys;
+    }
+
     private function readFileMessage($path)
     {
         if (! $fileContent = @file($path)) {
@@ -108,9 +119,9 @@ class CheckerKeys
      
     private function getKeys($path)
     {
-        $fileContent = readFileMessage($path);
+        $fileContent = $this->readFileMessage($path);
      
-        return readKeys($fileContent);
+        return $this->readKeys($fileContent);
     }
      
     private function readKeys($file)
@@ -122,7 +133,7 @@ class CheckerKeys
                 continue;
             }
      
-            $key = getKey($line);
+            $key = $this->getKey($line);
      
             $keys[] = $key;
         }
@@ -157,5 +168,25 @@ class CheckerKeys
         ));
         
         return true;
+    }
+
+    /**
+     * Gets the value of inMasterNotInToCheck.
+     *
+     * @return mixed
+     */
+    public function getInMasterNotInToCheck()
+    {
+        return $this->inMasterNotInToCheck;
+    }
+
+    /**
+     * Gets the value of inToCheckNotInMaster.
+     *
+     * @return mixed
+     */
+    public function getInToCheckNotInMaster()
+    {
+        return $this->inToCheckNotInMaster;
     }
 }

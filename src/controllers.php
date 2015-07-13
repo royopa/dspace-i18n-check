@@ -21,13 +21,18 @@ $app->match('/', function (Request $request) use ($app) {
     if ($form->isValid()) {
         $data = $form->getData();
 
-        $check = new CheckerKeys($app['db'], $data['master'], $data['toCheck']);
-        // do something with the data
+        $checker = new CheckerKeys($app['db'], $data['master'], $data['toCheck']);
 
-        // redirect somewhere
-        //return $app->redirect('...');
-        return new Response(var_dump($sourcesUpdate
-                ->getLastUpdate('translations_messages_xx.xml')));
+        return $app['twig']->render(
+            'list_differences.html.twig',
+            array(
+                'checker' => $checker,
+                'last_update_message' => $sourcesUpdate
+                    ->getLastUpdate('messages.xml'),
+                'last_update_translations' => $sourcesUpdate
+                    ->getLastUpdate('translations_messages_xx.xml'),
+            )
+        );
     }
 
     // display the form
