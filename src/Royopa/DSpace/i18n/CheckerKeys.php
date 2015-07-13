@@ -74,7 +74,7 @@ class CheckerKeys
         curl_close( $ch );
         fclose( $fp );
         
-        $this->registerUpdate($messageFile = 'messages.xml');
+        $this->registerUpdate($messageFile);
 
         return true;
     }

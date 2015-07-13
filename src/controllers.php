@@ -12,10 +12,10 @@ use Royopa\DSpace\i18n\Type\FormChecker;
 //Request::setTrustedProxies(array('127.0.0.1'));
 
 $app->match('/', function (Request $request) use ($app) {
+    $sourcesUpdate = new SourcesUpdate($app['db']);
     $form = $app['form.factory']
         ->createBuilder(new FormChecker())
         ->getForm();
-
     $form->handleRequest($request);
 
     if ($form->isValid()) {
@@ -26,10 +26,10 @@ $app->match('/', function (Request $request) use ($app) {
 
         // redirect somewhere
         //return $app->redirect('...');
-        return new Response(var_dump($check));
+        return new Response(var_dump($sourcesUpdate
+                ->getLastUpdate('translations_messages_xx.xml')));
     }
 
-    $sourcesUpdate = new SourcesUpdate($app['db']);
     // display the form
     return $app['twig']->render(
         'index.html.twig',
