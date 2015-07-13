@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Royopa\DSpace\i18n\CheckerKeys;
 use Royopa\DSpace\i18n\SourcesUpdate;
+use Royopa\DSpace\i18n\Reader;
 use Royopa\DSpace\i18n\Type\FormChecker;
 
 //Request::setTrustedProxies(array('127.0.0.1'));
@@ -57,19 +58,17 @@ $app->match('/update_sources', function (Request $request) use ($app) {
 })
 ->bind('update_sources');
 
+$app->match('/reader', function (Request $request) use ($app) {
+    return new Reader();
+
+    return $app['twig']->render(
+        'update_sources.html.twig',
+        array()
+    );
+})
+->bind('reader');
+
 $app->match('/update_sources_list', function (Request $request) use ($app) {
-    /*
-    $app['db']->insert('update_source', array(
-      'name_source' => 'translations_messages_xx.xml',
-      'date' => date('Y-m-d H:i:s'),
-    ));
-
-    $app['db']->insert('update_source', array(
-      'name_source' => 'messages.xml',
-      'date' => date('Y-m-d H:i:s'),
-    ));
-    */
-
     $rows = $app['db']->fetchAll('SELECT * FROM update_source');
     return $app['twig']->render(
         'update_sources_list.html.twig',
