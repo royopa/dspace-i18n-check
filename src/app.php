@@ -7,6 +7,7 @@ use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
 use Silex\Provider\HttpFragmentServiceProvider;
 use Silex\Provider\FormServiceProvider;
+use Doctrine\DBAL\Schema\Table;
 
 $app = new Application();
 $app->register(new RoutingServiceProvider());
@@ -31,5 +32,20 @@ $app['twig'] = $app->extend('twig', function ($twig, $app) {
 
     return $twig;
 });
+$app->register(new Silex\Provider\DoctrineServiceProvider(), array(
+    'db.options' => array(
+        'driver'   => 'pdo_sqlite',
+        'path'     => __DIR__.'/app.db',
+    ),
+));
+$schema = $app['db']->getSchemaManager();
+if (!$schema->tablesExist('update_source')) {
+    $table = new Table('update_source');
+    $table->addColumn('id', 'integer', array('unsigned' => true, 'autoincrement' => true));
+    $table->setPrimaryKey(array('id'));
+    $table->addColumn('name_source', 'string', array('length' => 32));
+    $table->addColumn('date', 'datetime');
+    $schema->createTable($table);
+}
 
 return $app;

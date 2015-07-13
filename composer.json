@@ -21,10 +21,11 @@
         "symfony/translation": "^2.7",
         "symfony/twig-bridge": "^2.7",
         "symfony/validator": "~2.6",
-        "guzzlehttp/guzzle": "^6.0",
+        "guzzlehttp/guzzle": "~5.3",
         "symfony/security-csrf": "^2.7",
         "royopa/phploy": "dev-master",
-        "twig/twig": "^1.18"
+        "twig/twig": "^1.18",
+        "doctrine/dbal": "^2.5"
     },
     "minimum-stability": "stable",
     "prefer-stable": true,

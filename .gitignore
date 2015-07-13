@@ -1,2 +1,3 @@
 /vendor/
 deploy.ini
+/src/app.db

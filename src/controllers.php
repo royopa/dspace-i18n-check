@@ -5,59 +5,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Royopa\DSpace\i18n\CheckKeys;
+use Royopa\DSpace\i18n\CheckerKeys;
+use Royopa\DSpace\i18n\SourcesUpdate;
+use Royopa\DSpace\i18n\Type\FormChecker;
 
 //Request::setTrustedProxies(array('127.0.0.1'));
 
 $app->match('/', function (Request $request) use ($app) {
-    // some default data for when the form is displayed the first time
-    $languagesAvailable = array(
-        'messages.xml' => 'en (master)',
-        'messages_ar.xml' => 'ar',
-        'messages_bg.xml' => 'bg',
-        'messages_ca.xml' => 'ca',
-        'messages_ca_ES.xml' => 'ca_ES',
-        'messages_cs.xml' => 'cs',
-        'messages_de.xml' => 'de',
-        'messages_el.xml' => 'el',
-        'messages_es.xml' => 'es',
-        'messages_et.xml' => 'et',
-        'messages_eu.xml' => 'eu',
-        'messages_fr.xml' => 'fr',
-        'messages_gl.xml' => 'gl',
-        'messages_id.xml' => 'id',
-        'messages_it.xml' => 'it',
-        'messages_ja.xml' => 'ja',
-        'messages_pl.xml' => 'pl',
-        'messages_pt_BR.xml' => 'pt_BR',
-        'messages_ru.xml' => 'ru',
-        'messages_tr.xml' => 'tr',
-        'messages_uk.xml' => 'uk',
-    );
-
-    $form = $app['form.factory']->createBuilder('form')
-        ->add('master', 'choice', array(
-            'label' => 'Master *',
-            'label_attr' => array('class' => 'col-sm-3 control-label'),
-            'attr' => array('class' => 'form-control'),
-            'choices' => $languagesAvailable,
-            'required' => true,
-            'expanded' => false,
-            'data' => 'messages.xml',
-        ))
-        ->add('toCheck', 'choice', array(
-            'label' => 'To Check *',
-            'label_attr' => array('class' => 'col-sm-3 control-label'),
-            'attr' => array('class' => 'form-control'),
-            'choices' => $languagesAvailable,
-            'required' => true,
-            'expanded' => false,
-            'empty_data'  => null,
-            'placeholder' => 'Choose an option',
-        ))
-        ->add('Check', 'submit', array(
-            'attr' => array('class' => 'btn btn-success')
-        ))
+    $form = $app['form.factory']
+        ->createBuilder(new FormChecker())
         ->getForm();
 
     $form->handleRequest($request);
@@ -65,8 +21,7 @@ $app->match('/', function (Request $request) use ($app) {
     if ($form->isValid()) {
         $data = $form->getData();
 
-        $check = new CheckKeys($data['master'], $data['toCheck']);
-
+        $check = new CheckerKeys($app['db'], $data['master'], $data['toCheck']);
         // do something with the data
 
         // redirect somewhere
@@ -74,20 +29,49 @@ $app->match('/', function (Request $request) use ($app) {
         return new Response(var_dump($check));
     }
 
+    $sourcesUpdate = new SourcesUpdate($app['db']);
     // display the form
-    return $app['twig']->render('index.html.twig', array('form' => $form->createView()));
+    return $app['twig']->render(
+        'index.html.twig',
+        array(
+            'form' => $form->createView(),
+            'last_update_message' => $sourcesUpdate
+                ->getLastUpdate('messages.xml'),
+            'last_update_translations' => $sourcesUpdate
+                ->getLastUpdate('translations_messages_xx.xml'),
+        )
+    );
 })
 ->bind('homepage');
 
 $app->match('/update_sources', function (Request $request) use ($app) {
-    return new Response('to do');
-    
     return $app['twig']->render(
-        'index.html.twig',
-        array('form' => $form->createView()
-    ));
+        'update_sources.html.twig',
+        array()
+    );
 })
 ->bind('update_sources');
+
+$app->match('/update_sources_list', function (Request $request) use ($app) {
+    /*
+    $app['db']->insert('update_source', array(
+      'name_source' => 'translations_messages_xx.xml',
+      'date' => date('Y-m-d H:i:s'),
+    ));
+
+    $app['db']->insert('update_source', array(
+      'name_source' => 'messages.xml',
+      'date' => date('Y-m-d H:i:s'),
+    ));
+    */
+
+    $rows = $app['db']->fetchAll('SELECT * FROM update_source');
+    return $app['twig']->render(
+        'update_sources_list.html.twig',
+        array('rows' => $rows)
+    );
+})
+->bind('update_sources_list');
 
 $app->error(function (\Exception $e, Request $request, $code) use ($app) {
     if ($app['debug']) {
@@ -102,5 +86,7 @@ $app->error(function (\Exception $e, Request $request, $code) use ($app) {
         'errors/default.html.twig',
     );
 
-    return new Response($app['twig']->resolveTemplate($templates)->render(array('code' => $code)), $code);
+    return new Response($app['twig']
+        ->resolveTemplate($templates)
+        ->render(array('code' => $code)), $code);
 });

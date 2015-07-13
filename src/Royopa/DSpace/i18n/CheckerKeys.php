@@ -10,14 +10,22 @@ namespace Royopa\DSpace\i18n;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use GuzzleHttp\Client;
+use Doctrine\DBAL\Connection;
 
-class CheckKeys
+class CheckerKeys
 {
-    public function __construct($master, $toCheck)
+    public function __construct(Connection $conn, $master, $toCheck)
     {
+        $this->conn    = $conn;
+        $this->master  = $master;
+        $this->toCheck = $toCheck;
+
+        $this->saveFile($toCheck);
+        $this->saveFile($master);
+
         //echo $this->getMessageXmlFile($this->getUrlMessageFile($master));
 
-        echo $this->getMessageXmlFile($this->getUrlMessageFile($toCheck));
+        //echo $this->getMessageXmlFile($this->getUrlMessageFile($toCheck));
 
         //$argc = 3;
 
@@ -36,15 +44,39 @@ class CheckKeys
         //$this->printMissing($toCheckKeys, $masterKeys);
     }
 
-    private function getUrlMessageFile($message = 'messages.xml')
+    private function getUrlMessageFile($messageFile = 'messages.xml')
     {
         $baseUrl = 'https://raw.githubusercontent.com/DSpace/DSpace/master/dspace-xmlui/src/main/webapp/i18n/';
 
-        if ($message != 'messages.xml') {
+        if ($messageFile != 'messages.xml') {
             $baseUrl = 'https://raw.githubusercontent.com/DSpace/dspace-xmlui-lang/master/src/main/webapp/i18n/';
         }
 
-        return $baseUrl . $message;
+        return $baseUrl . $messageFile;
+    }
+
+    private function saveFile($messageFile)
+    {
+        $fromUrl = $this->getUrlMessageFile($messageFile);
+        $pathToSave  = __DIR__ . '/../../../../sources/';
+        $toFile  = $pathToSave.$messageFile;
+
+        $fp = fopen ($toFile, 'w+');
+        $ch = \curl_init();
+        curl_setopt( $ch, CURLOPT_URL, $fromUrl );
+        curl_setopt( $ch, CURLOPT_BINARYTRANSFER, true );
+        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, false );
+        curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false );
+
+        curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, 10 );
+        curl_setopt( $ch, CURLOPT_FILE, $fp );
+        curl_exec( $ch );
+        curl_close( $ch );
+        fclose( $fp );
+        
+        $this->registerUpdate($messageFile = 'messages.xml');
+
+        return true;
     }
 
     private function getMessageXmlFile($url)
@@ -109,5 +141,21 @@ class CheckKeys
         $key = substr($line, 0, $charEnd - strlen($line));
      
         return $key;
+    }
+
+    private function registerUpdate($messageFile = 'messages.xml')
+    {
+        $name_source = 'messages.xml';
+
+        if ($messageFile != 'messages.xml') {
+            $name_source = 'translations_messages_xx.xml';
+        }
+
+        $this->conn->insert('update_source', array(
+          'name_source' => $name_source,
+          'date' => date('Y-m-d H:i:s'),
+        ));
+        
+        return true;
     }
 }
