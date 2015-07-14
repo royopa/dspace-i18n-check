@@ -9,18 +9,10 @@ namespace Royopa\DSpace\i18n;
 
 class Reader
 {
-    public function __construct()
+    public function getArrayKeysAndValues($pathFile)
     {
-        $pathToSave = __DIR__ . '/../../../../sources/';
-        
-        $master = 'messages.xml';
-        $this->fullPathMaster = $pathToSave.$master;
-
-        $toCheck = 'messages_pt_BR.xml';
-        $this->fullPathToCheck = $pathToSave.$toCheck;
-
         $reader = new \Sabre\Xml\Reader();
-        $reader->open($this->fullPathMaster);
+        $reader->open($pathFile);
         $reader->elementMap = [
             '{http://apache.org/cocoon/i18n/2.1}catalogue' => 'Sabre\Xml\Element\KeyValue',
         ];
@@ -36,6 +28,8 @@ class Reader
             $rows = $row;
         }
 
+        $reader->close();
+
         foreach ($rows as $key => $row) {
             $key   = $row['attributes']['key'];
             $value = $row['value'];
@@ -43,8 +37,6 @@ class Reader
             $output[$key] = $value;
         }
 
-        var_dump($output);
-
-        $reader->close();
+        return $output;
     }
 }

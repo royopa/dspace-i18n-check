@@ -11,6 +11,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use GuzzleHttp\Client;
 use Doctrine\DBAL\Connection;
+use Royopa\DSpace\i18n\Reader;
 
 class CheckerKeys
 {
@@ -35,13 +36,19 @@ class CheckerKeys
         if (! $fs->exists($this->fullPathToCheck)) {
             $this->saveFile($toCheck);
         }
-         
-        $masterKeys  = $this->getKeys($this->fullPathMaster);
-        $toCheckKeys = $this->getKeys($this->fullPathToCheck);
+
+        $reader = new Reader();
+
+        $masterArrayKeys  = $reader->getArrayKeysAndValues($this->fullPathMaster);
+        $toCheckArrayKeys = $reader->getArrayKeysAndValues($this->fullPathToCheck);
+
         //in master but not in translation file
-        $this->inMasterNotInToCheck = $this->buildMissingKeys($masterKeys, $toCheckKeys);
+        $this->inMasterNotInToCheck = $this
+            ->buildMissingKeys($masterArrayKeys, $toCheckArrayKeys);
+        
         //in translation but not in master
-        $this->inToCheckNotInMaster = $this->buildMissingKeys($toCheckKeys, $masterKeys);
+        $this->inToCheckNotInMaster = $this
+            ->buildMissingKeys($toCheckArrayKeys, $masterArrayKeys);
     }
 
     private function getUrlMessageFile($messageFile = 'messages.xml')
@@ -97,14 +104,13 @@ class CheckerKeys
 
     private function buildMissingKeys($reference, $test)
     {
-        $keys = array();
-        foreach ($test as $value) {
-            if (! in_array($value, $reference)) {
-                $keys[] = $value;
-            }
-        }
+        $referenceKeys = array_keys($reference);
+        $testKeys = array_keys($test);
+        
+        $missingKeys = array();
+        $missingKeys = array_diff($referenceKeys, $testKeys);
 
-        return $keys;
+        return $missingKeys;
     }
 
     private function readFileMessage($path)
